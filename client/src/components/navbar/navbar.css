@@ -1,0 +1,31 @@
+:root {
+  --background-color: #E9E6E6;
+  --font-color: #566885;
+}
+
+.navbar {
+  display: flex;
+  justify-content: center;
+  height: 50px;
+  background-color: white;
+  width: 100%;
+}
+.navbar__header {
+  margin-right: auto;
+  font-size: 24px;
+  font-weight: 700;
+}
+.navbar__logo {
+  margin: 0 30px;
+  font-size: 24px;
+  font-weight: 700;
+}
+.navbar__registration {
+  margin-left: 20px;
+}
+
+.container {
+  width: 1140px;
+  display: flex;
+  align-items: center;
+}/*# sourceMappingURL=navbar.css.map */

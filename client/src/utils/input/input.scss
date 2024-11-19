@@ -1,0 +1,33 @@
+@import "../colors.scss";
+
+input {
+    border: none;
+    border-bottom: var(--font-color) solid 3px;
+    background: transparent;
+    width: 100%;
+    padding: 3px;
+    &:focus {
+        outline: none;
+        transform: scale(1.01);
+    }
+}
+
+::-webkit-input-placeholder {
+    color: var(--font-color);
+    font-weight: 700;
+}
+
+:-ms-input-placeholder {
+    color: var(--font-color);
+    font-weight: 700;
+}
+
+::-moz-placeholder {
+    color: var(--font-color);
+    font-weight: 700;
+}
+
+:-moz-placeholder {
+    color: var(--font-color);
+    font-weight: 700;
+}

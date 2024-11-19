@@ -1,0 +1,28 @@
+@import "../../utils/colors.scss";
+
+.navbar {
+    display: flex;
+    justify-content: center;
+    height: 50px;
+    background-color: white;
+    width: 100%;
+    &__header {
+        margin-right: auto;
+        font-size: 24px;
+        font-weight: 700;
+    }
+    &__logo {
+        margin: 0 30px;
+        font-size: 24px;
+        font-weight: 700;
+    }
+    &__registration {
+        margin-left: 20px;
+    }
+}
+
+.container {
+    width: 1140px;
+    display: flex;
+    align-items: center;
+}
