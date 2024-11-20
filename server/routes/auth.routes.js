@@ -4,6 +4,9 @@ const config = require("config");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const {check, validationResult} = require("express-validator");
+const authMiddleware = require("../middleware/auth.middleware");
+const fileService = require("../services/fileService");
+const File = require("../models/File");
 
 const router = new Router();
 
@@ -29,6 +32,7 @@ router.post("/registration", [
         const hashPassword = await bcrypt.hash(password, 7);
         const user = new User({email, password: hashPassword});
         await user.save();
+        await fileService.createDir(new File({user: user.id, name: ""}))
         return res.json({message: "User was created"});
     } catch (e) {
         console.log(e);
@@ -48,6 +52,28 @@ router.post("/login",
             if (!isPassValid) {
                 return res.status(400).json({message: "Invalid password"});
             }
+            const token = jwt.sign({id: user.id}, config.get("secretKey"), {expiresIn: "1h"});
+            return res.json({
+                token,
+                user: {
+                    id: user.id,
+                    email: user.email,
+                    diskspace: user.diskspace,
+                    usedSpace: user.usedSpace,
+                    avatar: user.avatar
+                }   
+            })
+        } catch (e) {
+            console.log(e);
+            res.send({message: "Server error"});
+        }
+    }
+)
+
+router.get("/auth", authMiddleware, /* (добавляем миддлвер, который раскодирует jwt) */
+    async (req, res) => {
+        try {
+            const user = await User.findOne({_id: req.user.id});
             const token = jwt.sign({id: user.id}, config.get("secretKey"), {expiresIn: "1h"});
             return res.json({
                 token,
