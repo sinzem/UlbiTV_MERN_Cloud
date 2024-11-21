@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import "./navbar.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../reducers/userReducer";
+import Logo from "../../assets/Component_1.png"
 
 const Navbar = () => {
 
@@ -11,7 +12,7 @@ const Navbar = () => {
     return (
         <div className="navbar">
             <div className="container">
-                <div className="navbar__logo">LOGO</div>
+                <img src={Logo} alt="logo" />
                 <div className="navbar__header">MERN Cloud</div>
                 {!isAuth && <Link to="/login" className="navbar__login">Login</Link>}
                {!isAuth && <Link to="/registration" className="navbar__registration">Registration</Link>}
