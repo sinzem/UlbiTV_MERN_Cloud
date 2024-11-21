@@ -31,7 +31,7 @@ class FileController {
     async getFiles(req, res) { /* (для получения файлов - по id пользователя из jwt и id родительской папки из query) */
         try {
             const files = await File.find({user: req.user.id, parent: req.query.parent});
-            return res.json({files});
+            return res.json(files);
         } catch (e) {
 
         }
