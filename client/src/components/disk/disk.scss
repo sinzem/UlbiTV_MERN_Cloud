@@ -1,3 +1,5 @@
+@import "../../utils/colors.scss";
+
 .disk {
     &__container {
         width: 1140px;
@@ -13,7 +15,18 @@
     &__create {
         margin-left: 10px;
     }
-    
+    &__upload {
+        &_input {
+            display: none;
+        }
+        &_label {
+            display: block;
+            margin-left: 15px;
+            border: 1px solid var(--font-color);
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    }
 }
 
 .popup {

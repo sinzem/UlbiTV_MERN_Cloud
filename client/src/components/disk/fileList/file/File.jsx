@@ -9,13 +9,15 @@ const File = ({file}) => {
     const dispatch = useDispatch();
     const currentDir = useSelector(state => state.files.currentDir);
 
-    function openHandler() {
-        dispatch(pushToStack(currentDir)); /* (добавляем id текущей папки в массив - для возможности перехода обратно) */
-        dispatch(setCurrentDir(file._id));
+    function openHandler(file) {
+        if (file.type === "dir") {
+            dispatch(pushToStack(currentDir)); /* (добавляем id текущей папки в массив - для возможности перехода обратно) */
+            dispatch(setCurrentDir(file._id));
+        }
     }
 
     return (
-        <div className="file" onClick={file.type === "dir" ? () => openHandler() : null}>
+        <div className="file" onClick={() => openHandler(file)}>
             <img src={file.type === "dir" ? dirLogo : fileLogo} alt="folder" className="file__img" />
             <div className="file__name">{file.name}</div>
             <div className="file__date">{file.date.slice(0, 10)}</div>
