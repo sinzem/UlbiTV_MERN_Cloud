@@ -6,6 +6,7 @@ import "./disk.scss";
 import Popup from "./Popup";
 import { setCurrentDir, setPopupDisplay } from "../../reducers/fileReducer";
 import { useState } from "react";
+import Uploader from "./uploader/Uploader";
 
 
 const Disk = () => {
@@ -72,6 +73,7 @@ const Disk = () => {
             </div>
             <FileList />
             <Popup />
+            <Uploader />
         </div> 
         :
         <div className="drop_area"
