@@ -66,11 +66,15 @@ class FileController {
             file.mv(path); /* (отправляем файл по заданному пути) */
 
             const type = file.name.split(".").pop(); /* (получаем тип файла) */
+            let filePath = file.name;
+            if (parent) {
+                filePath = parent.path + "\\" + file.name;
+            }
             const dbFile = new File({
                 name: file.name,
                 type,
                 size: file.size,
-                path: parent?.path,
+                path: filePath,
                 parent: parent?._id,
                 user: user._id
             });  /* (составляем новый обьект для записи в БД) */ 
@@ -97,6 +101,24 @@ class FileController {
          } catch (e) {
             console.log(e);
             res.status(500).json({message: "Download error"})
+        }
+    }
+
+    async deleteFile(req, res) {
+        try {
+            const file = await File.findOne({_id: req.query.id, user: req.user.id});
+            console.log(file);
+            if (!file) {
+                return res.status(400).json({message: "File not found"});
+            }
+            /* (удаляем файл из папки на сервере и запись о файле в таблице) */
+            fileService.deleteFile(file);
+            // await file.remove(); /* (как у автора - не работает) */
+            await File.deleteOne({_id: req.query.id});
+            return res.json({message: "File was deleted"});
+        } catch (e) {
+            console.log(e);
+            return res.status(400).json({message: e.message});  /* (наиболее вероятной ошибкой может быть error при попытке удалить папку, если в ней еще есть файлы или папки(нужно прописать рекурсивное удаление)) */
         }
     }
 }
