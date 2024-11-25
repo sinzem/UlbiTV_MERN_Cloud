@@ -13,11 +13,13 @@ const Disk = () => {
     const dispatch = useDispatch();
     const currentDir = useSelector(state => state.files.currentDir);
     const dirStack = useSelector(state => state.files.dirStack);
+    const loader = useSelector(state => state.app.loader);
     const [dragEnter, setDragEnter] = useState(false); /* (для загрузки файлов при перетаскивании) */
+    const [sort, setSort] = useState("type"); /* (для сортировки, добавляем в get запрос) */
 
     useEffect(() => {
-        dispatch(getFiles(currentDir));
-    }, [currentDir])
+        dispatch(getFiles(currentDir, sort));
+    }, [currentDir, sort])
 
     function showPopupHandler() {
         dispatch(setPopupDisplay("flex"));
@@ -52,6 +54,14 @@ const Disk = () => {
         files.forEach(file => dispatch(uploadFile(file, currentDir)));
         setDragEnter(false);
     }
+    
+    if (loader) {
+        return (
+            <div className="loader">
+                <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+            </div>
+        )
+    }
  
     return ( !dragEnter 
         ?
@@ -70,6 +80,13 @@ const Disk = () => {
                             multiple={true}
                             onChange={(event) => fileUploadHandler(event)}/>
                 </div>
+                <select className="disk__select"
+                        value={sort}
+                        onChange={(e) => setSort(e.target.value)}>
+                    <option value="name">By name</option>
+                    <option value="type">By type</option>
+                    <option value="date">By date</option>
+                </select>
             </div>
             <FileList />
             <Popup />

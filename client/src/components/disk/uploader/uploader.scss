@@ -9,6 +9,7 @@
     right: 0;
     padding: 20px;
     border-radius: 12px;
+    overflow-y: auto;
     &__header {
         display: flex;
         justify-content: space-between;
