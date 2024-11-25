@@ -32,7 +32,22 @@ class FileController {
 
     async getFiles(req, res) { /* (для получения файлов - по id пользователя из jwt и id родительской папки из query) */
         try {
-            const files = await File.find({user: req.user.id, parent: req.query.parent});
+            const {sort} = req.query; /* (ожидаем в запросе название сортировки) */
+            let files;
+            switch (sort) {
+                case "name": 
+                    files = await File.find({user: req.user.id, parent: req.query.parent}).sort({name: 1}); /* (при -1 отсортирует по убыванию) */
+                    break;
+                case "type": 
+                    files = await File.find({user: req.user.id, parent: req.query.parent}).sort({type: 1});
+                    break;
+                case "date": 
+                    files = await File.find({user: req.user.id, parent: req.query.parent}).sort({date: 1});
+                    break;
+                default:
+                    files = await File.find({user: req.user.id, parent: req.query.parent});
+                    break;
+            }
             return res.json(files);
         } catch (e) {
 
@@ -119,6 +134,18 @@ class FileController {
         } catch (e) {
             console.log(e);
             return res.status(400).json({message: e.message});  /* (наиболее вероятной ошибкой может быть error при попытке удалить папку, если в ней еще есть файлы или папки(нужно прописать рекурсивное удаление)) */
+        }
+    }
+
+    async searchFile(req, res) { /* (для поиска) */
+        try {
+            const searchName = req.query.search;  /* (получаем строку поиска из запроса) */
+            let files = await File.find({user: req.user.id}); /* (получаем все файлы пользователя) */
+            files = files.filter(file => file.name.includes(searchName)); /* (отфильтровываем включающие запрос) */
+            return res.json(files);
+        } catch (e) {
+            console.log(e);
+            return res.status(400).json({message: "Search error"});
         }
     }
 }
