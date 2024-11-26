@@ -4,7 +4,7 @@ import { createDir, getFiles, uploadFile } from "../../actions/file";
 import FileList from "./fileList/FileList";
 import "./disk.scss";
 import Popup from "./Popup";
-import { setCurrentDir, setPopupDisplay } from "../../reducers/fileReducer";
+import { setCurrentDir, setFileView, setPopupDisplay } from "../../reducers/fileReducer";
 import { useState } from "react";
 import Uploader from "./uploader/Uploader";
 
@@ -58,7 +58,7 @@ const Disk = () => {
     if (loader) {
         return (
             <div className="loader">
-                <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+                <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
             </div>
         )
     }
@@ -87,6 +87,8 @@ const Disk = () => {
                     <option value="type">By type</option>
                     <option value="date">By date</option>
                 </select>
+                <button className="disk__plate" onClick={() => dispatch(setFileView("plate"))} />
+                <button className="disk__list" onClick={() => dispatch(setFileView("list"))} />
             </div>
             <FileList />
             <Popup />

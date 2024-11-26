@@ -39,6 +39,25 @@
     }
 }
 
+.file-plate {
+    width: 150px;
+    height: 150px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    &__img {
+        height: 100px;
+        width: 100px;
+    }
+    &__btns {
+        display: none;
+    }
+    &:hover &__btns {
+        display: flex;
+    }
+}
+
 .file-enter-active {
     animation: file-enter 500ms forwards;
 }

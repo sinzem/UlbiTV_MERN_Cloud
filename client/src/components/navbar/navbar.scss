@@ -21,8 +21,16 @@
     &__search {
         width: 200px;
         margin-left: 30px;
-        margin-right: auto;
         text-align: start;
+    }
+    &__login {
+        margin-left: auto;
+    }
+    &__avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-left: 10px;
     }
 }
 
