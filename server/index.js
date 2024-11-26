@@ -13,6 +13,7 @@ const PORT = config.get("serverPort");
 app.use(fileUpload({}))
 app.use(corsMiddleware);
 app.use(express.json());
+app.use(express.static("static")); /* (для работы со статическими файлами подключаем папку static из корневой папки) */
 app.use("/api/auth", authRouter);
 app.use("/api/files", fileRouter);
 

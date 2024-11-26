@@ -3,6 +3,7 @@ const fs = require("fs");
 const fileService = require("../services/fileService");
 const User = require("../models/User");
 const File = require("../models/File");
+const uuid = require("uuid");
 
 class FileController {
     async createDir(req, res) {
@@ -108,7 +109,7 @@ class FileController {
     async downloadFile(req, res) { /* (для скачивания файла) */
         try {
             const file = await File.findOne({_id: req.query.id, user: req.user.id}); /* (ищем файл и совпадение id пользователя(чтобы любой другой пользователь не мог скачать файл)) */
-            const path = config.get("filePath") + "\\" + req.user.id + "\\" + file.name; /* (составляем путь к файлу) */
+            const path = fileService.getPath(file);
             if (fs.existsSync(path)) { /* (если существует, загружаем) */
                 return res.download(path, file.name);
             }
@@ -146,6 +147,34 @@ class FileController {
         } catch (e) {
             console.log(e);
             return res.status(400).json({message: "Search error"});
+        }
+    }
+
+    async uploadAvatar(req, res) {
+        try {
+            const file = req.files.file; /* (получаем файл из запроса) */
+            const user = await User.findById(req.user.id); /* (Получаем пользователя из БД по id из токена) */
+            const avatarName = uuid.v4() + ".jpg"; /* (генерируем имя для аватарки пользователя) */
+            file.mv(config.get("staticPath") + "\\" + avatarName); /* (помещаем фото в папку для статики) */
+            user.avatar = avatarName; /* (добавляем путь к фото в обьект пользователя) */
+            await user.save(); /* (сохраняем изменения в БД) */
+            return res.json(user);
+        } catch (e) {
+            console.log(e);
+            return res.status(400).json({message: "There was an error loading the avatar"});
+        }
+    }
+
+    async deleteAvatar(req, res) {
+        try {
+            const user = await User.findById(req.user.id);
+            fs.unlinkSync(config.get("staticPath") + "\\" + user.avatar); 
+            user.avatar = null; 
+            await user.save(); 
+            return res.json(user);
+        } catch (e) {
+            console.log(e);
+            return res.status(400).json({message: "An error occurred while deleting your avatar"});
         }
     }
 }
