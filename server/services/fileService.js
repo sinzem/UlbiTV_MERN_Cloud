@@ -4,8 +4,9 @@ const file = require("../models/File");
 
 class FileService {
 
-    createDir(file) {
-        const filePath = `${config.get("filePath")}\\${file.user}\\${file.path}`; /* (складываем путь к файлу - изначально создаем общую папку file, далее папку для каждого пользователя(будет создаваться при регистрации), в нее складываем загруженные файлы) */
+    createDir(req, file) {
+        /* const filePath = `${config.get("filePath")}\\${file.user}\\${file.path}`; */ /* (складываем путь к файлу - изначально создаем общую папку file, далее папку для каждого пользователя(будет создаваться при регистрации), в нее складываем загруженные файлы) */
+        const filePath = this.getPath(req, file); /* (путь к файлу получаем из запроса(миддлвер filepath добавит к запросу соответстыующее поле)) */
         return new Promise((resolve, reject) => {
             try {
                 if (!fs.existsSync(filePath)) {
@@ -20,8 +21,8 @@ class FileService {
         })
     }
 
-    deleteFile(file) {
-        const path = this.getPath(file);
+    deleteFile(req, file) {
+        const path = this.getPath(req, file);
         if (file.type === "dir") {
             fs.rmdirSync(path);
         } else {
@@ -29,8 +30,8 @@ class FileService {
         }
     }
 
-    getPath(file) {
-        return config.get("filePath") + "\\" + file.user + "\\" + file.path;
+    getPath(req, file) {
+        return /* config.get("filePath") */req.filePath + "\\" + file.user + "\\" + file.path;
     }
 }
 

@@ -18,7 +18,7 @@ class FileController {
             } else {
                 /* (если родительский файл найден, дописываем путь загружаемого и сохраняем как дочерний) */
                 file.path = `${parentFile.path}\\${file.name}`;
-                await fileService.createDir(file);
+                await fileService.createDir(req, file);
                 parentFile.childs.push(file._id);
                 await parentFile.save();
             }
@@ -70,9 +70,11 @@ class FileController {
 
             let path;
             if (parent) {
-                path = `${config.get("filePath")}\\${user._id}\\${parent.path}\\${file.name}`;
+                // path = `${config.get("filePath")}\\${user._id}\\${parent.path}\\${file.name}`;
+                path = `${req.filePath}\\${user._id}\\${parent.path}\\${file.name}`;
             } else {
-                path = `${config.get("filePath")}\\${user._id}\\${file.name}`;
+                // path = `${config.get("filePath")}\\${user._id}\\${file.name}`;
+                path = `${req.filePath}\\${user._id}\\${file.name}`;
             } /* (составляем путь к файлу) */
 
             if (fs.existsSync(path)) {
@@ -91,7 +93,7 @@ class FileController {
                 type,
                 size: file.size,
                 path: filePath,
-                parent: parent?._id,
+                parent: parent ? parent._id : null,
                 user: user._id
             });  /* (составляем новый обьект для записи в БД) */ 
 
@@ -109,7 +111,7 @@ class FileController {
     async downloadFile(req, res) { /* (для скачивания файла) */
         try {
             const file = await File.findOne({_id: req.query.id, user: req.user.id}); /* (ищем файл и совпадение id пользователя(чтобы любой другой пользователь не мог скачать файл)) */
-            const path = fileService.getPath(file);
+            const path = fileService.getPath(req, file);
             if (fs.existsSync(path)) { /* (если существует, загружаем) */
                 return res.download(path, file.name);
             }
@@ -128,7 +130,7 @@ class FileController {
                 return res.status(400).json({message: "File not found"});
             }
             /* (удаляем файл из папки на сервере и запись о файле в таблице) */
-            fileService.deleteFile(file);
+            fileService.deleteFile(req, file);
             // await file.remove(); /* (как у автора - не работает) */
             await File.deleteOne({_id: req.query.id});
             return res.json({message: "File was deleted"});
