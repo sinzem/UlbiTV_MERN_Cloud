@@ -83,7 +83,7 @@ export async function downloadFile(file) {
         }
     })
     if (response.status === 200) {
-        /* (если файл найден, берем из его бинарного представления ссылку, создаем ссылку в верстке, кликаем для загрузки и удаляем) */
+        /* (если файл найден, берем из его бинарного представления ссылку, создаем ссылку в верстке, кликаем для загрузки и удаляем(загрузка происходит автоматически при помещении файла в инпут, без клика подтверждения)) */
         const blob = await response.blob();
         const downloadUrl = window.URL.createObjectURL(blob);
         const link = document.createElement("a");
